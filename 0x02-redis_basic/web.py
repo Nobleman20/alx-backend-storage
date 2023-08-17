@@ -16,7 +16,7 @@ def data_cacher(method: Callable) -> Callable:
     '''Caches the output of fetched data.
     '''
     @wraps(method)
-    def invoker(url) -> str:
+    def method_with_cache(url) -> str:
         '''The wrapper function for caching the output.
         '''
         redis_store.incr(f'count:{url}')
@@ -27,7 +27,7 @@ def data_cacher(method: Callable) -> Callable:
         redis_store.set(f'count:{url}', 0)
         redis_store.setex(f'result:{url}', 10, result)
         return result
-    return invoker
+    return method_with_cache
 
 
 @data_cacher
